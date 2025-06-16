@@ -3,7 +3,7 @@ services:
     build:
       context: .
       args:
-        PHP_VERSION: ${PHP_VERSION:-8.3}
+        PHP_VERSION: "${PHP_VERSION:-8.3}"
     container_name: php-fpm
     volumes:
       - ../:/var/www/html:cached
@@ -22,9 +22,9 @@ services:
       - ./nginx/sites:/etc/nginx/sites
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - "80:80"       # web
-      - "5173:5173"   # Vite
-      - "6001:6001"   # Laravel Echo Server
+      - "${WEB_PORT:-80}:80"                # web
+      - "${VITE_PORT:-5173}:5173"           # Vite
+      - "${LARAVEL_ECHO_PORT:-6001}:6001"   # Laravel Echo Server
     restart: unless-stopped
 
   composer:
@@ -49,14 +49,14 @@ services:
     image: mysql:8.0
     container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: laravelpass
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:-rootpassword}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE:-laravel}"
+      MYSQL_USER: "${MYSQL_USER:-laravel}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD:-laravelpass}"
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT:-3306}:3306"
     restart: unless-stopped
 
   redis:
@@ -65,15 +65,15 @@ services:
     volumes:
       - redis_data:/data
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     restart: unless-stopped
 
   mailhog:
     image: mailhog/mailhog
     container_name: mailhog
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - "${MAILHOG_SMTP_PORT:-1025}:1025"
+      - "${MAILHOG_WEB_PORT:-8025}:8025"
     restart: unless-stopped
 
 volumes:
